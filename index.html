@@ -996,12 +996,13 @@ class App{
     if(this.medias) this.medias.forEach(m=>m.onResize({screen:this.screen,viewport:this.viewport}));
   }
   update(){
+    this.raf=window.requestAnimationFrame(this.update.bind(this));
+    if(this.paused || document.hidden) return;   // skip the WebGL render when off-screen / tab hidden
     this.scroll.current=lerp(this.scroll.current,this.scroll.target,this.scroll.ease);
     const direction=this.scroll.current>this.scroll.last?'right':'left';
     if(this.medias) this.medias.forEach(m=>m.update(this.scroll,direction));
     this.renderer.render({scene:this.scene,camera:this.camera});
     this.scroll.last=this.scroll.current;
-    this.raf=window.requestAnimationFrame(this.update.bind(this));
   }
   addEventListeners(){
     this.boundResize=this.onResize.bind(this); this.boundWheel=this.onWheel.bind(this);
@@ -1025,7 +1026,8 @@ class App{
   if(!el) return;
   try{ await document.fonts.load("36px 'Bebas Neue'"); await document.fonts.ready; }catch(_){}
   try{
-    new App(el, { items: ITEMS, bend: 3, textColor: '#f5bc44', borderRadius: 0.06, font: "36px 'Bebas Neue'", scrollSpeed: 2, scrollEase: 0.03 });
+    var app = new App(el, { items: ITEMS, bend: 3, textColor: '#f5bc44', borderRadius: 0.06, font: "36px 'Bebas Neue'", scrollSpeed: 2, scrollEase: 0.03 });
+    if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ app.paused = !es[0].isIntersecting; }, {rootMargin:'150px'}).observe(el); }
   }catch(err){
     console.error('CircularGallery failed to init:', err);
     el.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">Gallery could not load (WebGL required).</p>';
@@ -1091,7 +1093,9 @@ function setupSpotlight(sections){
   spot.style.cssText = `position:fixed;width:800px;height:800px;border-radius:50%;pointer-events:none;z-index:3;opacity:0;transform:translate(-50%,-50%);mix-blend-mode:screen;background:radial-gradient(circle, rgba(${GLOW},.12) 0%, rgba(${GLOW},.06) 15%, rgba(${GLOW},.03) 25%, rgba(${GLOW},.015) 40%, transparent 65%)`;
   document.body.appendChild(spot);
   const prox = SPOT_RADIUS*0.5, fade = SPOT_RADIUS*0.75;
-  document.addEventListener('mousemove', e => {
+  let _mm=null, _ticking=false;
+  function processMove(){
+    _ticking=false; const e=_mm; if(!e) return;
     const sec = sections.find(s => { const r = s.getBoundingClientRect();
       return e.clientX>=r.left && e.clientX<=r.right && e.clientY>=r.top && e.clientY<=r.bottom; });
     const cards = document.querySelectorAll('.mb-card');
@@ -1110,7 +1114,9 @@ function setupSpotlight(sections){
     gsap.to(spot,{left:e.clientX, top:e.clientY, duration:.1, ease:'power2.out'});
     const op = minD<=prox ? 0.8 : minD<=fade ? ((fade-minD)/(fade-prox))*0.8 : 0;
     gsap.to(spot,{opacity:op, duration:op>0?0.2:0.5, ease:'power2.out'});
-  });
+  }
+  document.addEventListener('mousemove', e => { _mm={clientX:e.clientX, clientY:e.clientY};
+    if(!_ticking){ _ticking=true; requestAnimationFrame(processMove); } }, {passive:true});
   document.addEventListener('mouseleave', () => {
     document.querySelectorAll('.mb-card').forEach(c=>c.style.setProperty('--glow-intensity','0'));
     gsap.to(spot,{opacity:0,duration:.3});
@@ -1335,7 +1341,7 @@ setupSpotlight(sections);
   gl.uniform1f(U('uAutoCenterRepulsion'),P.autoCenter);gl.uniform1i(U('uTransparent'),P.transparent);
   var uRes=U('uResolution'),uTime=U('uTime'),uStarSpeed=U('uStarSpeed'),uMouse=U('uMouse'),uMAF=U('uMouseActiveFactor');
 
-  var dprCap=1.5;
+  var dprCap=1.0;   // ambient background layer — 1x is plenty and roughly halves GPU cost
   function resize(){var dpr=Math.min(window.devicePixelRatio||1,dprCap);var w=canvas.clientWidth,h=canvas.clientHeight;
     canvas.width=Math.max(1,Math.round(w*dpr));canvas.height=Math.max(1,Math.round(h*dpr));gl.viewport(0,0,canvas.width,canvas.height);
     gl.uniform3f(uRes,canvas.width,canvas.height,canvas.width/canvas.height);}
@@ -1346,7 +1352,16 @@ setupSpotlight(sections);
     hero.addEventListener('mousemove',function(e){var r=canvas.getBoundingClientRect();tMouse={x:(e.clientX-r.left)/r.width,y:1.0-(e.clientY-r.top)/r.height};tAct=1.0;});
     hero.addEventListener('mouseleave',function(){tAct=0.0;});
   }
+  // Only render while the hero is on screen and the tab is visible — stops the shader
+  // from burning GPU on every frame once you've scrolled past it.
+  var heroVisible=true;
+  if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ heroVisible=es[0].isIntersecting; }).observe(hero); }
+  var lastDraw=0, MINDT=1000/30;   // cap ambient starfield to ~30fps
   function frame(t){
+    if(!reduce) requestAnimationFrame(frame);
+    if(document.hidden || !heroVisible){ lastDraw=t; return; }
+    if(t-lastDraw < MINDT) return;
+    lastDraw=t;
     var time=t*0.001;
     gl.uniform1f(uTime,time);
     gl.uniform1f(uStarSpeed,(time*P.starSpeed)/10.0);
@@ -1355,7 +1370,6 @@ setupSpotlight(sections);
     gl.uniform2f(uMouse,sMouse.x,sMouse.y);gl.uniform1f(uMAF,sAct);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES,0,3);
-    if(!reduce) requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
 })();
