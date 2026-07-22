@@ -1212,16 +1212,19 @@ setupSpotlight(sections);
   document.getElementById('hcChatClose').addEventListener('click', closeChat);
   cform.addEventListener('submit', function(e){ e.preventDefault(); var v=cinput.value; cinput.value=''; handle(v); });
 
-  /* Proactive auto-open once per visit — waits for the promo popup to clear so they don't stack */
+  /* Proactive auto-open once per visit — GUARANTEED to pop up; yields to the promo briefly but never waits forever */
   (function(){
     if(sessionStorage.getItem('hc_chat_auto')) return;
+    var start = Date.now(), MAXWAIT = 20000;
     function tryOpen(){
       if(sessionStorage.getItem('hc_chat_auto')) return;
-      if(chat.classList.contains('open')){ sessionStorage.setItem('hc_chat_auto','1'); return; }   // user already opened it
-      if(promo && promo.classList.contains('show')){ setTimeout(tryOpen, 2500); return; }           // wait for promo to be dismissed
+      if(chat.classList.contains('open')){ sessionStorage.setItem('hc_chat_auto','1'); return; }   // user opened it first
+      var promoUp = promo && promo.classList.contains('show');
+      if(promoUp && (Date.now()-start) < MAXWAIT){ setTimeout(tryOpen, 1500); return; }             // let the promo be seen/dismissed first
+      if(promoUp){ promo.classList.remove('show'); }                                                // cap reached — clear promo so the chat is visible
       sessionStorage.setItem('hc_chat_auto','1'); openChat();
     }
-    setTimeout(tryOpen, 8000);
+    setTimeout(tryOpen, 6000);
   })();
 
   /* ---------- Inquiry form ---------- */
