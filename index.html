@@ -71,6 +71,18 @@
      radial-gradient(900px 460px at 78% -8%, rgba(245,188,68,.14), transparent 60%),
      radial-gradient(760px 440px at 4% 12%, rgba(26,201,130,.10), transparent 58%)}
   .hero-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+  /* Lightweight static starfield — GPU-free fallback for phones / reduced-motion / low-end */
+  .hero-stars{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.55;
+    background-repeat:repeat;background-size:340px 340px;
+    background-image:
+      radial-gradient(1.5px 1.5px at 40px 60px, rgba(245,188,68,.85), transparent),
+      radial-gradient(1px 1px at 130px 120px, rgba(255,255,255,.6), transparent),
+      radial-gradient(1px 1px at 210px 40px, rgba(203,169,109,.75), transparent),
+      radial-gradient(1.5px 1.5px at 90px 210px, rgba(255,255,255,.5), transparent),
+      radial-gradient(1px 1px at 260px 230px, rgba(245,188,68,.6), transparent),
+      radial-gradient(1px 1px at 300px 110px, rgba(26,201,130,.5), transparent),
+      radial-gradient(1px 1px at 20px 280px, rgba(255,255,255,.55), transparent),
+      radial-gradient(1.5px 1.5px at 320px 300px, rgba(245,188,68,.5), transparent)}
   .hero-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;
     background:linear-gradient(90deg, rgba(8,11,18,.66) 0%, rgba(8,11,18,.3) 46%, rgba(8,11,18,0) 72%)}
   .hero > .wrap{position:relative;z-index:2}
@@ -464,6 +476,7 @@
 <!-- HERO -->
 <section class="hero">
   <canvas class="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero-stars" aria-hidden="true"></div>
   <div class="hero-scrim" aria-hidden="true"></div>
   <div class="wrap">
     <h1 class="disp hero-h">AI SPORTS &amp; WEALTH<br><span class="row2">TOOLS. ONE PLATFORM.</span></h1>
@@ -1292,9 +1305,14 @@ setupSpotlight(sections);
 (function(){
   var canvas=document.querySelector('.hero-canvas'); if(!canvas) return;
   var hero=document.querySelector('.hero');
-  var gl=canvas.getContext('webgl',{alpha:true,premultipliedAlpha:false,antialias:true});
-  if(!gl) return;
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var starsEl=document.querySelector('.hero-stars');
+  // Skip the GPU shader on phones / reduced-motion / very low-core devices — the CSS starfield stands in.
+  var LOWEND = window.innerWidth <= 768 || reduce || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
+  if(LOWEND){ canvas.style.display='none'; return; }
+  if(starsEl) starsEl.style.display='none';
+  var gl=canvas.getContext('webgl',{alpha:true,premultipliedAlpha:false,antialias:true});
+  if(!gl){ canvas.style.display='none'; if(starsEl) starsEl.style.display=''; return; }
 
   var VERT='attribute vec2 uv;attribute vec2 position;varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position,0.0,1.0);}';
   var FRAG=[
