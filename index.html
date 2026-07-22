@@ -1212,6 +1212,18 @@ setupSpotlight(sections);
   document.getElementById('hcChatClose').addEventListener('click', closeChat);
   cform.addEventListener('submit', function(e){ e.preventDefault(); var v=cinput.value; cinput.value=''; handle(v); });
 
+  /* Proactive auto-open once per visit — waits for the promo popup to clear so they don't stack */
+  (function(){
+    if(sessionStorage.getItem('hc_chat_auto')) return;
+    function tryOpen(){
+      if(sessionStorage.getItem('hc_chat_auto')) return;
+      if(chat.classList.contains('open')){ sessionStorage.setItem('hc_chat_auto','1'); return; }   // user already opened it
+      if(promo && promo.classList.contains('show')){ setTimeout(tryOpen, 2500); return; }           // wait for promo to be dismissed
+      sessionStorage.setItem('hc_chat_auto','1'); openChat();
+    }
+    setTimeout(tryOpen, 8000);
+  })();
+
   /* ---------- Inquiry form ---------- */
   var iform = document.querySelector('.inq-form');
   if(iform){
