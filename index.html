@@ -327,6 +327,60 @@
   .score-team.win .sc{color:var(--gold-bright)}
   .score-empty{color:var(--dim);padding:32px;text-align:center;width:100%}
 
+  /* Interactive pick demo */
+  .consult-btn{white-space:nowrap}
+  @media(max-width:600px){.consult-btn{display:none}}
+  .demo-modes{display:inline-flex;gap:6px;background:var(--panel);border:1px solid var(--line-2);border-radius:999px;padding:5px;margin-bottom:16px}
+  .demo-mode{border:0;background:transparent;color:var(--muted);font-weight:700;font-size:.82rem;padding:8px 16px;border-radius:999px;cursor:pointer}
+  .demo-mode.active{background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:#181203}
+  .demo-tabs{display:flex;gap:10px;overflow-x:auto;margin-bottom:16px;scrollbar-width:none}
+  .demo-tabs::-webkit-scrollbar{display:none}
+  .demo-tab{flex:0 0 auto;background:var(--panel);border:1px solid var(--line-2);color:var(--muted);padding:7px 15px;border-radius:999px;font-weight:700;font-size:.8rem;cursor:pointer;white-space:nowrap}
+  .demo-tab.active{background:var(--gold-soft);border-color:rgba(203,169,109,.4);color:var(--gold-bright)}
+  .demo-wrap{display:grid;gap:18px}
+  @media(min-width:900px){.demo-wrap{grid-template-columns:1.6fr 1fr;align-items:start}}
+  .demo-games{display:grid;gap:12px}
+  .game-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+  .game-card .g-status{font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);margin-bottom:8px}
+  .g-picks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .team-pick{display:flex;align-items:center;gap:9px;background:rgba(0,0,0,.25);border:1px solid var(--line-2);border-radius:10px;padding:9px 11px;cursor:pointer;text-align:left;transition:border-color .12s,background .12s;color:inherit}
+  .team-pick:hover{border-color:var(--gold)}
+  .team-pick.sel{border-color:var(--gold-bright);background:var(--gold-soft)}
+  .team-pick img{width:24px;height:24px;object-fit:contain;flex:0 0 auto}
+  .team-pick .tp-name{font-weight:700;font-size:.86rem;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .team-pick .tp-odds{font-variant-numeric:tabular-nums;font-weight:800;font-size:.85rem;color:var(--gold-bright)}
+  .demo-slip{background:linear-gradient(160deg,rgba(245,188,68,.06),rgba(26,201,130,.04)),rgba(255,255,255,.03);border:1px solid var(--line-2);border-radius:16px;padding:18px;position:sticky;top:82px}
+  .slip-head{display:flex;align-items:center;justify-content:space-between;font-family:"Bebas Neue",sans-serif;font-size:1.3rem;letter-spacing:.02em;margin-bottom:12px}
+  .demo-badge{font-family:"Inter",sans-serif;font-size:.6rem;letter-spacing:.12em;font-weight:800;color:#181203;background:var(--gold-bright);padding:3px 8px;border-radius:6px}
+  .slip-empty{color:var(--dim);font-size:.88rem}
+  .slip-sel{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+  .slip-sel .s-team{font-weight:800}
+  .slip-sel .s-meta{color:var(--dim);font-size:.78rem;margin-top:2px}
+  .slip-sel .s-odds{color:var(--gold-bright);font-weight:800;float:right}
+  .bet-types{display:flex;gap:6px;margin-bottom:12px}
+  .bet-type{flex:1;background:rgba(0,0,0,.25);border:1px solid var(--line-2);color:var(--muted);border-radius:8px;padding:8px;font-size:.78rem;font-weight:700;cursor:pointer}
+  .bet-type.active{border-color:var(--gold-bright);color:var(--gold-bright);background:var(--gold-soft)}
+  .stake{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.3);border:1px solid var(--line-2);border-radius:10px;padding:8px 12px;margin:6px 0 12px}
+  .stake span{color:var(--dim)}
+  .stake input{flex:1;background:transparent;border:0;color:#fff;font-size:1.05rem;font-family:"Inter",sans-serif;width:100%}
+  .stake input:focus{outline:none}
+  .slip-payout{display:flex;justify-content:space-between;align-items:center;font-size:.88rem;color:var(--muted);margin-bottom:12px}
+  .slip-payout b{color:var(--green);font-size:1.15rem;font-variant-numeric:tabular-nums}
+  .slip-note{color:var(--dim);font-size:.72rem;font-style:italic;margin-top:10px}
+  .slip-done{text-align:center;padding:6px 0}
+  .slip-done .disp{color:var(--green);font-size:1.6rem}
+  .prop-form{display:grid;gap:10px}
+  .prop-form label{font-size:.76rem;font-weight:700;color:var(--muted);display:flex;flex-direction:column;gap:5px}
+  .prop-form input,.prop-form select{background:rgba(0,0,0,.3);border:1px solid var(--line-2);border-radius:10px;padding:10px 12px;color:#fff;font-family:"Inter",sans-serif;font-size:.9rem}
+  .prop-form input:focus,.prop-form select:focus{outline:none;border-color:var(--gold)}
+  .ou-toggle{display:flex;gap:6px}
+  .ou-toggle button{flex:1;background:rgba(0,0,0,.25);border:1px solid var(--line-2);color:var(--muted);border-radius:8px;padding:9px;font-weight:700;cursor:pointer;font-size:.82rem}
+  .ou-toggle button.active{border-color:var(--gold-bright);color:var(--gold-bright);background:var(--gold-soft)}
+  .gamble-disclosure{margin-top:22px;border:1px solid rgba(245,188,68,.35);background:rgba(245,188,68,.06);border-radius:14px;padding:16px 18px;color:var(--muted);font-size:.82rem;line-height:1.6}
+  .gamble-disclosure strong{color:var(--gold-bright)}
+  .gamble-disclosure b{color:#fff}
+  .gamble-disclosure a{color:var(--gold-bright);text-decoration:underline}
+
   .steps{counter-reset:s;display:grid;gap:14px}
   @media(min-width:820px){.steps{grid-template-columns:repeat(3,1fr)}}
   .step{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px}
@@ -385,12 +439,13 @@
     <div class="logo">HUSTLEMAN <b>CAPITAL</b></div>
     <nav class="barlinks">
       <a href="#included">What's Included</a><a href="#how">How It Works</a>
-      <a href="#proof">Results</a><a href="pricing.html">Pricing</a><a href="#faq">FAQ</a><a href="#inquiry">Contact</a>
+      <a href="#proof">Demo</a><a href="pricing.html">Pricing</a><a href="#faq">FAQ</a><a href="#inquiry">Contact</a>
     </nav>
-    <span style="display:flex;align-items:center;gap:12px">
+    <span style="display:flex;align-items:center;gap:10px">
       <a class="iglink" href="https://www.instagram.com/hustlemantherapper/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
         <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
       </a>
+      <a class="btn ghost consult-btn" href="#inquiry">Book a Consultation</a>
       <a class="btn" href="#pricing">Start — $19.99</a>
     </span>
   </div>
@@ -510,26 +565,39 @@
 </section>
 
 <!-- RESULTS / PROOF — honest placeholder, no fabricated live data -->
-<section id="proof" class="bento-on">
+<section id="proof">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow">Results</p>
-      <h2 class="disp sec">PROOF YOU CAN CHECK.</h2>
-      <p class="sub">This section is reserved for <b class="gold">real, verifiable</b> numbers and member stories.
-        Drop in documented figures and consented testimonials — nothing here is invented.</p>
+      <p class="eyebrow">Try It Live</p>
+      <h2 class="disp sec">BUILD A PICK — SEE HOW IT WORKS.</h2>
+      <p class="sub">Pick a real matchup and side to preview the pick-builder. <b class="gold">Demo only</b> — no real
+        wagering, no real money, and no guaranteed outcomes.</p>
     </div>
-    <div class="grid g3">
-      <div class="ph"><b>[ Documented stat #1 ]</b><span class="q">e.g. verified member count, with source &amp; date</span></div>
-      <div class="ph"><b>[ Documented stat #2 ]</b><span class="q">e.g. published pick record over a stated period + methodology</span></div>
-      <div class="ph"><b>[ Documented stat #3 ]</b><span class="q">e.g. real aggregate figure the client can substantiate</span></div>
+
+    <div class="demo-modes" role="tablist">
+      <button class="demo-mode active" data-mode="lines" type="button">Game Lines</button>
+      <button class="demo-mode" data-mode="props" type="button">Player Props</button>
     </div>
-    <div class="grid g3" style="margin-top:16px">
-      <div class="ph"><b>[ Real member story ]</b><span class="q">Name, consent on file, honest result. "Individual results vary."</span></div>
-      <div class="ph"><b>[ Real member story ]</b><span class="q">Name, consent on file, honest result.</span></div>
-      <div class="ph"><b>[ Real member story ]</b><span class="q">Name, consent on file, honest result.</span></div>
+    <div class="demo-tabs" id="demoTabs"></div>
+
+    <div class="demo-wrap">
+      <div class="demo-main">
+        <div class="demo-games" id="demoGames"><p class="slip-empty">Loading matchups…</p></div>
+      </div>
+      <aside class="demo-slip">
+        <div class="slip-head">Your Pick <span class="demo-badge">DEMO</span></div>
+        <div id="slipBody"><p class="slip-empty">Select a matchup, then tap a side to build your demo pick.</p></div>
+      </aside>
     </div>
-    <span class="fine">Placeholders intentionally left for verified content. Testimonials must reflect genuine
-      experiences; atypical results must be disclosed.</span>
+
+    <div class="gamble-disclosure">
+      <strong>⚠️ Gambling disclosure.</strong> This is an interactive demonstration for entertainment only — it is
+      not a sportsbook, uses no real money, and is not a prediction, guarantee, or financial advice. Sports betting
+      carries real financial risk and you can lose money. You must be <b>21+</b> and only where it is legal.
+      <br>If gambling is becoming a problem for you or someone you know, help is free, confidential, and available
+      24/7 — <b>call 1-800-522-4700</b> or <b>call/text 1-800-GAMBLER</b>
+      (<a href="https://www.ncpgambling.org/" target="_blank" rel="noopener noreferrer">ncpgambling.org</a>).
+    </div>
   </div>
 </section>
 
@@ -1183,6 +1251,122 @@ setupSpotlight(sections);
     });
     if(input) input.addEventListener('input', function(){ if(msg.classList.contains('err')){ msg.textContent=''; msg.className='email-msg'; } });
   });
+})();
+</script>
+
+<!-- Interactive pick-builder demo (live matchups via ESPN; illustrative odds; no real wagering) -->
+<script>
+(function(){
+  var gamesEl=document.getElementById('demoGames'), tabsEl=document.getElementById('demoTabs'), slipBody=document.getElementById('slipBody');
+  if(!gamesEl) return;
+  var LEAGUES=[
+    {key:'mlb',label:'MLB',path:'baseball/mlb'},
+    {key:'nba',label:'NBA',path:'basketball/nba'},
+    {key:'nfl',label:'NFL',path:'football/nfl'},
+    {key:'nhl',label:'NHL',path:'hockey/nhl'}
+  ];
+  var MARKETS={ mlb:['Hits','Total Bases','Strikeouts','RBIs','Home Runs'], nba:['Points','Rebounds','Assists','3-Pointers Made','Pts+Reb+Ast'], nfl:['Passing Yards','Rushing Yards','Receptions','Receiving Yards','Anytime TD'], nhl:['Shots on Goal','Goals','Assists','Points','Saves'] };
+  var cache={}, current='mlb', mode='lines', events=[], sel=null;
+
+  function esc(s){var d=document.createElement('div');d.textContent=s==null?'':s;return d.innerHTML;}
+  function amFmt(a){a=+a;return (a>0?'+':'')+a;}
+  function amDec(a){a=+a;return a>0?a/100+1:100/Math.abs(a)+1;}
+  function money(n){return '$'+(Math.round(n*100)/100).toFixed(2);}
+  function payoutAmt(stake,o){return (parseFloat(stake)||0)*amDec(o);}
+
+  function comp(ev){return ev.competitions[0];}
+  function teams(ev){var cs=comp(ev).competitors;return {away:cs.find(function(c){return c.homeAway==='away';})||cs[0], home:cs.find(function(c){return c.homeAway==='home';})||cs[1]};}
+  function tinfo(c){return {abbr:c.team.abbreviation||'', name:c.team.shortDisplayName||c.team.displayName||c.team.abbreviation||'', logo:c.team.logo||''};}
+  function odds(ev){return (comp(ev).odds&&comp(ev).odds[0])||{};}
+  function ml(ev,side){var o=odds(ev),to=o[side+'TeamOdds'];return (to&&to.moneyLine!=null)?to.moneyLine:-110;}
+  function spreadFor(ev,side){var o=odds(ev),s=(o.spread!=null)?o.spread:-1.5;return (side==='home')?s:-s;}
+  function matchup(ev){var t=teams(ev);return tinfo(t.away).abbr+' @ '+tinfo(t.home).abbr;}
+
+  function renderTabs(){ tabsEl.innerHTML=''; LEAGUES.forEach(function(l){var b=document.createElement('button');b.type='button';b.className='demo-tab'+(l.key===current?' active':'');b.textContent=l.label;b.onclick=function(){if(current===l.key)return;current=l.key;sel=null;renderTabs();loadGames();renderSlip();};tabsEl.appendChild(b);}); }
+
+  function cardLines(ev,idx){
+    var t=teams(ev),st=ev.status.type.shortDetail||'',a=tinfo(t.away),h=tinfo(t.home);
+    function pick(side,ti){var selc=sel&&sel.evIdx===idx&&sel.side===side;
+      return '<button class="team-pick'+(selc?' sel':'')+'" data-ev="'+idx+'" data-side="'+side+'" type="button">'
+        +(ti.logo?'<img src="'+esc(ti.logo)+'" alt="">':'<span style="width:24px;flex:0 0 auto"></span>')
+        +'<span class="tp-name">'+esc(ti.name)+'</span><span class="tp-odds">'+amFmt(ml(ev,side))+'</span></button>';}
+    return '<div class="game-card"><div class="g-status">'+esc(st)+'</div><div class="g-picks">'+pick('away',a)+pick('home',h)+'</div></div>';
+  }
+  function cardProps(ev,idx){
+    var t=teams(ev),st=ev.status.type.shortDetail||'',a=tinfo(t.away),h=tinfo(t.home),selc=sel&&sel.evIdx===idx;
+    return '<button class="game-card" data-evprop="'+idx+'" type="button" style="width:100%;text-align:left;cursor:pointer;'+(selc?'border-color:var(--gold-bright)':'')+'">'
+      +'<div class="g-status">'+esc(st)+'</div><div style="display:flex;align-items:center;gap:8px;font-weight:700">'
+      +'<span>'+esc(a.abbr)+'</span><span style="color:var(--dim)">@</span><span>'+esc(h.abbr)+'</span>'
+      +'<span style="margin-left:auto;color:var(--gold-bright);font-size:.75rem">'+(selc?'Selected ✓':'Build prop →')+'</span></div></button>';
+  }
+  function drawGames(){ gamesEl.innerHTML = events.length ? events.map(function(ev,i){return mode==='lines'?cardLines(ev,i):cardProps(ev,i);}).join('') : '<p class="slip-empty">No games scheduled for this league today — try another league.</p>'; }
+  function loadGames(){
+    gamesEl.innerHTML='<p class="slip-empty">Loading matchups…</p>';
+    if(cache[current]){ events=cache[current]; drawGames(); return; }
+    var l=LEAGUES.find(function(x){return x.key===current;});
+    fetch('https://site.api.espn.com/apis/site/v2/sports/'+l.path+'/scoreboard').then(function(r){return r.json();})
+      .then(function(j){ cache[current]=j.events||[]; events=cache[current]; drawGames(); })
+      .catch(function(){ gamesEl.innerHTML='<p class="slip-empty">Couldn’t load matchups right now.</p>'; });
+  }
+
+  function renderSlip(){
+    if(!sel){ slipBody.innerHTML='<p class="slip-empty">Select a matchup, then '+(mode==='lines'?'tap a side':'build a player prop')+' to create your demo pick.</p>'; return; }
+    if(sel.kind==='line') lineSlip(); else propSlip();
+    wireSlip();
+  }
+  function lineSlip(){
+    var lineTxt = sel.betType==='Spread' ? ((sel.spread>0?'+':'')+sel.spread+' spread') : 'Moneyline';
+    slipBody.innerHTML =
+      '<div class="bet-types">'+['Moneyline','Spread'].map(function(x){return '<button class="bet-type'+(x===sel.betType?' active':'')+'" data-bt="'+x+'" type="button">'+x+'</button>';}).join('')+'</div>'
+      +'<div class="slip-sel"><span class="s-odds">'+amFmt(sel.odds)+'</span><div class="s-team">'+esc(sel.team.name)+'</div><div class="s-meta">'+esc(sel.matchup)+' · '+esc(lineTxt)+'</div></div>'
+      +'<label style="font-size:.76rem;font-weight:700;color:var(--muted)">Demo stake<div class="stake"><span>$</span><input id="stakeInput" type="number" min="1" step="1" value="'+(sel.stake||25)+'"></div></label>'
+      +'<div class="slip-payout"><span>Illustrative payout</span><b id="payoutOut">—</b></div>'
+      +'<button class="btn full" id="placeDemo" type="button">Place Demo Pick</button>'
+      +'<p class="slip-note">Illustrative odds &amp; payout for demonstration only. No real bet is placed.</p>';
+  }
+  function propSlip(){
+    var mk=MARKETS[current]||MARKETS.mlb;
+    slipBody.innerHTML =
+      '<div class="slip-sel"><div class="s-team">'+esc(sel.matchup)+'</div><div class="s-meta">Build a demo player prop</div></div>'
+      +'<div class="prop-form">'
+      +'<div class="ou-toggle" style="margin-bottom:2px">'+[sel.teamA,sel.teamH].map(function(t,i){return '<button class="'+((sel.teamSide===i)?'active':'')+'" data-teamside="'+i+'" type="button">'+esc(t)+'</button>';}).join('')+'</div>'
+      +'<label>Player<input id="propPlayer" type="text" placeholder="Enter a player" value="'+esc(sel.player||'')+'"></label>'
+      +'<label>Market<select id="propMarket">'+mk.map(function(m){return '<option'+(m===sel.market?' selected':'')+'>'+esc(m)+'</option>';}).join('')+'</select></label>'
+      +'<label>Line<input id="propLine" type="number" step="0.5" value="'+(sel.line!=null?sel.line:1.5)+'"></label>'
+      +'<div class="ou-toggle">'+['Over','Under'].map(function(x){return '<button class="'+((sel.ou===x)?'active':'')+'" data-ou="'+x+'" type="button">'+x+'</button>';}).join('')+'</div>'
+      +'<label>Demo stake<div class="stake"><span>$</span><input id="stakeInput" type="number" min="1" value="'+(sel.stake||25)+'"></div></label>'
+      +'<div class="slip-payout"><span>Illustrative payout (-110)</span><b id="payoutOut">—</b></div>'
+      +'<button class="btn full" id="placeDemo" type="button">Place Demo Pick</button>'
+      +'<p class="slip-note">Illustrative only — not a real bet and not a real player projection.</p></div>';
+  }
+  function wireSlip(){
+    var stakeEl=document.getElementById('stakeInput');
+    if(stakeEl){ var upd=function(){ sel.stake=parseFloat(stakeEl.value)||0; var out=document.getElementById('payoutOut'); if(out) out.textContent=money(payoutAmt(sel.stake, sel.odds||-110)); }; stakeEl.addEventListener('input',upd); upd(); }
+    slipBody.querySelectorAll('.bet-type').forEach(function(b){ b.onclick=function(){ var bt=b.getAttribute('data-bt'),ev=events[sel.evIdx]; sel.betType=bt; if(bt==='Spread'){sel.odds=-110;sel.spread=spreadFor(ev,sel.side);}else{sel.odds=ml(ev,sel.side);} renderSlip(); }; });
+    var pp=document.getElementById('propPlayer'); if(pp) pp.oninput=function(){sel.player=pp.value;};
+    var pm=document.getElementById('propMarket'); if(pm) pm.onchange=function(){sel.market=pm.value;};
+    var pl=document.getElementById('propLine'); if(pl) pl.oninput=function(){sel.line=parseFloat(pl.value);};
+    slipBody.querySelectorAll('[data-ou]').forEach(function(b){ b.onclick=function(){sel.ou=b.getAttribute('data-ou');renderSlip();}; });
+    slipBody.querySelectorAll('[data-teamside]').forEach(function(b){ b.onclick=function(){sel.teamSide=+b.getAttribute('data-teamside');renderSlip();}; });
+    var place=document.getElementById('placeDemo'); if(place) place.onclick=placeDemo;
+  }
+  function placeDemo(){
+    slipBody.innerHTML='<div class="slip-done"><div class="disp">✓ DEMO PICK LOGGED</div><p class="sub" style="margin:8px auto">This was a simulation — <b style="color:#fff">no real wager was placed and no money changed hands.</b></p><p class="slip-note">21+. If gambling is a problem, call 1-800-522-4700 or 1-800-GAMBLER.</p><button class="btn ghost full" id="demoReset" type="button" style="margin-top:12px">Build another</button></div>';
+    var rs=document.getElementById('demoReset'); if(rs) rs.onclick=function(){ sel=null; drawGames(); renderSlip(); };
+  }
+
+  gamesEl.addEventListener('click', function(e){
+    var tp=e.target.closest('.team-pick');
+    if(tp && mode==='lines'){ var i=+tp.getAttribute('data-ev'),side=tp.getAttribute('data-side'),ev=events[i],t=teams(ev),ti=tinfo(side==='away'?t.away:t.home);
+      sel={kind:'line',evIdx:i,side:side,team:ti,matchup:matchup(ev),betType:'Moneyline',odds:ml(ev,side),stake:(sel&&sel.stake)||25}; drawGames(); renderSlip(); return; }
+    var gp=e.target.closest('[data-evprop]');
+    if(gp && mode==='props'){ var j=+gp.getAttribute('data-evprop'),ev2=events[j],t2=teams(ev2),a=tinfo(t2.away),h=tinfo(t2.home),mk=MARKETS[current]||MARKETS.mlb;
+      sel={kind:'prop',evIdx:j,matchup:matchup(ev2),teamA:a.abbr,teamH:h.abbr,teamSide:0,player:'',market:mk[0],line:1.5,ou:'Over',odds:-110,stake:(sel&&sel.stake)||25}; drawGames(); renderSlip(); return; }
+  });
+
+  document.querySelectorAll('.demo-mode').forEach(function(b){ b.onclick=function(){ if(b.classList.contains('active'))return; document.querySelectorAll('.demo-mode').forEach(function(x){x.classList.remove('active');}); b.classList.add('active'); mode=b.getAttribute('data-mode'); sel=null; drawGames(); renderSlip(); }; });
+
+  renderTabs(); loadGames(); renderSlip();
 })();
 </script>
 
