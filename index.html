@@ -314,20 +314,24 @@
   .score-tab{flex:0 0 auto;background:var(--panel);border:1px solid var(--line-2);color:var(--muted);padding:8px 16px;border-radius:999px;font-weight:700;font-size:.82rem;cursor:pointer;white-space:nowrap;transition:color .15s,background .15s,border-color .15s}
   .score-tab:hover{color:var(--ink)}
   .score-tab.active{background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:#181203;border-color:transparent}
-  .score-row{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x proximity;scrollbar-width:none}
-  .score-row::-webkit-scrollbar{display:none}
-  .score-card{flex:0 0 auto;width:216px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 15px;transition:border-color .15s,transform .15s}
+  .score-row{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+  .score-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;transition:border-color .15s,transform .15s}
   .score-card:hover{border-color:var(--line-2);transform:translateY(-2px)}
-  .score-status{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:11px;display:flex;align-items:center;gap:6px;min-height:14px}
+  .sc-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+  .score-status{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:6px}
   .score-status.live{color:var(--green);font-weight:800}
   .score-status .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulseDot 1.6s infinite;flex:0 0 auto}
-  .score-team{display:flex;align-items:center;gap:10px;padding:5px 0}
+  .sc-league{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--gold);background:var(--gold-soft);border:1px solid rgba(203,169,109,.2);padding:2px 7px;border-radius:5px;flex:0 0 auto}
+  .sc-teams{display:flex;flex-direction:column}
+  .score-team{display:flex;align-items:center;gap:10px;padding:8px 0}
+  .score-team + .score-team{border-top:1px solid var(--line)}
   .score-team img{width:26px;height:26px;object-fit:contain;flex:0 0 auto}
-  .score-team .abbr{font-weight:700;font-size:.92rem;flex:1;color:var(--muted)}
-  .score-team .sc{font-family:"Bebas Neue",sans-serif;font-size:1.6rem;line-height:1;color:var(--dim);font-variant-numeric:tabular-nums}
+  .score-team .abbr{font-weight:700;font-size:.9rem;flex:1;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .score-team .sc{font-family:"Bebas Neue",sans-serif;font-size:1.65rem;line-height:1;color:var(--dim);font-variant-numeric:tabular-nums}
   .score-team.win .abbr{color:#fff}
   .score-team.win .sc{color:var(--gold-bright)}
-  .score-empty{color:var(--dim);padding:32px;text-align:center;width:100%}
+  .sc-nologo{width:26px;flex:0 0 auto}
+  .score-empty{color:var(--dim);padding:32px;text-align:center;grid-column:1/-1}
 
   /* Interactive pick demo */
   .consult-btn{white-space:nowrap}
@@ -662,7 +666,7 @@
         <span class="live-badge"><i></i> Auto-updating</span>
       </div>
       <h2 class="disp sec" style="margin-top:10px">TODAY'S SCORES.</h2>
-      <p class="sub">Real-time results across the leagues — refreshes on its own. Swipe to see more games.</p>
+      <p class="sub">Real-time results across the leagues — refreshes on its own as games update.</p>
     </div>
     <div class="score-tabs" id="scoreTabs"></div>
     <div class="score-row" id="scoreRow"><div class="score-empty">Loading scores…</div></div>
@@ -1395,10 +1399,12 @@ setupSpotlight(sections);
       tabsEl.appendChild(b);
     });
   }
+  function curLabel(){ var l=LEAGUES.find(function(x){return x.key===current;}); return l ? l.label : ''; }
   function teamRow(c, win){
+    var nm = c.team.shortDisplayName || c.team.displayName || c.team.abbreviation || '';
     return '<div class="score-team'+(win?' win':'')+'">'
-      + (c.team.logo ? '<img src="'+esc(c.team.logo)+'" alt="" loading="lazy">' : '<span style="width:26px;flex:0 0 auto"></span>')
-      + '<span class="abbr">'+esc(c.team.abbreviation || c.team.shortDisplayName || '')+'</span>'
+      + (c.team.logo ? '<img src="'+esc(c.team.logo)+'" alt="" loading="lazy">' : '<span class="sc-nologo"></span>')
+      + '<span class="abbr">'+esc(nm)+'</span>'
       + '<span class="sc">'+esc(c.score != null && c.score !== '' ? c.score : '–')+'</span></div>';
   }
   function gameCard(ev){
@@ -1408,8 +1414,8 @@ setupSpotlight(sections);
     if(post){ win=cs.map(function(c){ return !!c.winner; }); }
     else if(live){ var a=parseFloat(cs[0].score)||0, b=parseFloat(cs[1].score)||0; if(a!==b) win=[a>b, b>a]; }
     return '<div class="score-card">'
-      + '<div class="score-status'+(live?' live':'')+'">'+(live?'<span class="dot"></span>':'')+esc(st.shortDetail || st.description || '')+'</div>'
-      + teamRow(cs[0], win[0]) + teamRow(cs[1], win[1]) + '</div>';
+      + '<div class="sc-top"><span class="score-status'+(live?' live':'')+'">'+(live?'<span class="dot"></span>':'')+esc(st.shortDetail || st.description || '')+'</span><span class="sc-league">'+esc(curLabel())+'</span></div>'
+      + '<div class="sc-teams">'+teamRow(cs[0], win[0]) + teamRow(cs[1], win[1])+'</div></div>';
   }
   function render(events){
     if(!events || !events.length){ row.innerHTML='<div class="score-empty">No games scheduled for this league today.</div>'; return; }
