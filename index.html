@@ -292,7 +292,7 @@
   .email-cta{max-width:480px;margin-top:24px}
   .email-cta .email-row{display:flex;gap:10px;flex-wrap:wrap}
   .email-cta input{flex:1;min-width:210px;background:rgba(0,0,0,.3);border:1px solid var(--line-2);border-radius:999px;padding:14px 20px;color:#fff;font-size:1rem;font-family:"Inter",sans-serif}
-  .email-cta input::placeholder{color:var(--dim)}
+  .email-cta input::placeholder{color:var(--gold)}
   .email-cta input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,188,68,.18)}
   .email-cta .btn{white-space:nowrap;flex:0 0 auto}
   .email-cta.done .email-row{display:none}
@@ -301,6 +301,31 @@
   .email-msg.ok{color:var(--green)}
   .final .email-cta{margin-left:auto;margin-right:auto}
   .final .email-cta .email-row{justify-content:center}
+
+  /* Live scoreboard */
+  .score-head{display:flex;align-items:center;gap:12px}
+  .live-badge{display:inline-flex;align-items:center;gap:7px;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--green)}
+  .live-badge i{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulseDot 1.6s infinite}
+  @keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(26,201,130,.5)}70%{box-shadow:0 0 0 8px rgba(26,201,130,0)}100%{box-shadow:0 0 0 0 rgba(26,201,130,0)}}
+  .score-tabs{display:flex;gap:10px;overflow-x:auto;margin:18px 0;scrollbar-width:none}
+  .score-tabs::-webkit-scrollbar{display:none}
+  .score-tab{flex:0 0 auto;background:var(--panel);border:1px solid var(--line-2);color:var(--muted);padding:8px 16px;border-radius:999px;font-weight:700;font-size:.82rem;cursor:pointer;white-space:nowrap;transition:color .15s,background .15s,border-color .15s}
+  .score-tab:hover{color:var(--ink)}
+  .score-tab.active{background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:#181203;border-color:transparent}
+  .score-row{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x proximity;scrollbar-width:none}
+  .score-row::-webkit-scrollbar{display:none}
+  .score-card{flex:0 0 auto;width:216px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 15px;transition:border-color .15s,transform .15s}
+  .score-card:hover{border-color:var(--line-2);transform:translateY(-2px)}
+  .score-status{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:11px;display:flex;align-items:center;gap:6px;min-height:14px}
+  .score-status.live{color:var(--green);font-weight:800}
+  .score-status .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulseDot 1.6s infinite;flex:0 0 auto}
+  .score-team{display:flex;align-items:center;gap:10px;padding:5px 0}
+  .score-team img{width:26px;height:26px;object-fit:contain;flex:0 0 auto}
+  .score-team .abbr{font-weight:700;font-size:.92rem;flex:1;color:var(--muted)}
+  .score-team .sc{font-family:"Bebas Neue",sans-serif;font-size:1.6rem;line-height:1;color:var(--dim);font-variant-numeric:tabular-nums}
+  .score-team.win .abbr{color:#fff}
+  .score-team.win .sc{color:var(--gold-bright)}
+  .score-empty{color:var(--dim);padding:32px;text-align:center;width:100%}
 
   .steps{counter-reset:s;display:grid;gap:14px}
   @media(min-width:820px){.steps{grid-template-columns:repeat(3,1fr)}}
@@ -555,6 +580,22 @@
     <div class="news-chips" id="newsChips"></div>
     <div class="news-feed" id="newsFeed"><div class="news-loading">Loading today's headlines…</div></div>
     <p class="news-src">Live headlines via the ESPN public API — swap in your licensed/official feed for production.</p>
+  </div>
+</section>
+
+<!-- LIVE SCOREBOARD (live via ESPN public API) -->
+<section id="scores">
+  <div class="wrap">
+    <div class="head">
+      <div class="score-head">
+        <p class="eyebrow" style="margin:0">Live Scoreboard</p>
+        <span class="live-badge"><i></i> Auto-updating</span>
+      </div>
+      <h2 class="disp sec" style="margin-top:10px">TODAY'S SCORES.</h2>
+      <p class="sub">Real-time results across the leagues — refreshes on its own. Swipe to see more games.</p>
+    </div>
+    <div class="score-tabs" id="scoreTabs"></div>
+    <div class="score-row" id="scoreRow"><div class="score-empty">Loading scores…</div></div>
   </div>
 </section>
 
@@ -1142,6 +1183,59 @@ setupSpotlight(sections);
     });
     if(input) input.addEventListener('input', function(){ if(msg.classList.contains('err')){ msg.textContent=''; msg.className='email-msg'; } });
   });
+})();
+</script>
+
+<!-- Live scoreboard — auto-refreshing fetch from ESPN public API -->
+<script>
+(function(){
+  var row = document.getElementById('scoreRow'), tabsEl = document.getElementById('scoreTabs');
+  if(!row) return;
+  var LEAGUES = [
+    { key:'mlb', label:'MLB', path:'baseball/mlb' },
+    { key:'nba', label:'NBA', path:'basketball/nba' },
+    { key:'nfl', label:'NFL', path:'football/nfl' },
+    { key:'nhl', label:'NHL', path:'hockey/nhl' }
+  ];
+  var current = 'mlb';
+  function esc(s){ var d=document.createElement('div'); d.textContent = s==null ? '' : s; return d.innerHTML; }
+  function api(){ var l=LEAGUES.find(function(x){return x.key===current;}); return 'https://site.api.espn.com/apis/site/v2/sports/'+l.path+'/scoreboard'; }
+  function tabs(){
+    tabsEl.innerHTML='';
+    LEAGUES.forEach(function(l){
+      var b=document.createElement('button'); b.type='button';
+      b.className='score-tab'+(l.key===current?' active':''); b.textContent=l.label;
+      b.onclick=function(){ if(current===l.key) return; current=l.key; tabs(); load(); };
+      tabsEl.appendChild(b);
+    });
+  }
+  function teamRow(c, win){
+    return '<div class="score-team'+(win?' win':'')+'">'
+      + (c.team.logo ? '<img src="'+esc(c.team.logo)+'" alt="" loading="lazy">' : '<span style="width:26px;flex:0 0 auto"></span>')
+      + '<span class="abbr">'+esc(c.team.abbreviation || c.team.shortDisplayName || '')+'</span>'
+      + '<span class="sc">'+esc(c.score != null && c.score !== '' ? c.score : '–')+'</span></div>';
+  }
+  function gameCard(ev){
+    var comp=ev.competitions[0], cs=comp.competitors, st=ev.status.type;
+    var live = st.state==='in', post = st.state==='post';
+    var win=[false,false];
+    if(post){ win=cs.map(function(c){ return !!c.winner; }); }
+    else if(live){ var a=parseFloat(cs[0].score)||0, b=parseFloat(cs[1].score)||0; if(a!==b) win=[a>b, b>a]; }
+    return '<div class="score-card">'
+      + '<div class="score-status'+(live?' live':'')+'">'+(live?'<span class="dot"></span>':'')+esc(st.shortDetail || st.description || '')+'</div>'
+      + teamRow(cs[0], win[0]) + teamRow(cs[1], win[1]) + '</div>';
+  }
+  function render(events){
+    if(!events || !events.length){ row.innerHTML='<div class="score-empty">No games scheduled for this league today.</div>'; return; }
+    row.innerHTML = events.map(gameCard).join('');
+  }
+  function load(showLoading){
+    if(showLoading !== false) row.innerHTML='<div class="score-empty">Loading scores…</div>';
+    fetch(api()).then(function(r){ return r.json(); }).then(function(j){ render(j.events||[]); })
+      .catch(function(){ if(showLoading !== false) row.innerHTML='<div class="score-empty">Couldn’t load scores right now.</div>'; });
+  }
+  tabs(); load();
+  setInterval(function(){ if(!document.hidden) load(false); }, 45000);   // silent auto-refresh for live games
 })();
 </script>
 
