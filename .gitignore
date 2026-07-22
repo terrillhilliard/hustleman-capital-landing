@@ -1,0 +1,12 @@
+# Dev tooling (not part of the site)
+.agents/
+.claude/
+skills-lock.json
+
+# Vercel
+.vercel/
+
+# Node / OS
+node_modules/
+.DS_Store
+Thumbs.db
